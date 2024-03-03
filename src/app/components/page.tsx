@@ -17,9 +17,12 @@ const SnakeGame: React.FC = () => {
   const [speed, setSpeed] = useState<number>(initialSnakeSpeed); // Speed of the snake
   const [gameOver, setGameOver] = useState<boolean>(false);
   const [score, setScore] = useState<number>(0);
-  const [highScore, setHighScore] = useState<number>(
-    parseInt(localStorage.getItem("highScore") || "0")
-  );
+  const [highScore, setHighScore] = useState<number>(() => {
+    if (typeof window !== "undefined") {
+      return parseInt(localStorage.getItem("highScore") || "0");
+    }
+    return 0; // Default value if localStorage is not available
+  });
   const [showModal, setShowModal] = useState<boolean>(false);
 
   // Randomly place food in an unoccupied position
@@ -93,7 +96,7 @@ const SnakeGame: React.FC = () => {
     const intervalId = setInterval(handleMove, speed);
 
     return () => clearInterval(intervalId);
-  }, [snake, direction, speed, gameOver, highScore, score]);
+  }, [snake, direction, speed, gameOver]);
 
   // Handle keyboard input for snake direction
   useEffect(() => {
